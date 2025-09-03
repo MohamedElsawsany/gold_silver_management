@@ -13,10 +13,11 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
         
         # Add custom claims
         token['role'] = user.role
-        token['branch_id'] = user.branch.id
-        token['branch_name'] = user.branch.name
+        token['branch_id'] = user.branch.id if user.branch else None
+        token['branch_name'] = user.branch.name if user.branch else None
         token['username'] = user.username
         token['email'] = user.email
+        token['is_warehouse_keeper'] = user.is_warehouse_keeper
         
         return token
     
@@ -29,10 +30,11 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
             'username': self.user.username,
             'email': self.user.email,
             'role': self.user.role,
+            'is_warehouse_keeper': self.user.is_warehouse_keeper,
             'branch': {
                 'id': self.user.branch.id,
                 'name': self.user.branch.name
-            }
+            } if self.user.branch else None
         }
         
         return data
@@ -60,6 +62,24 @@ class LoginSerializer(serializers.Serializer):
             return attrs
         else:
             raise serializers.ValidationError('Username and password are required')
+
+class UserSerializer(serializers.ModelSerializer):
+    """User serializer for read operations"""
+    
+    branch = serializers.SerializerMethodField()
+    
+    class Meta:
+        model = User
+        fields = ['id', 'username', 'email', 'role', 'is_warehouse_keeper', 'branch', 'is_active', 'created_at', 'last_login']
+        read_only_fields = ['id', 'created_at', 'last_login']
+    
+    def get_branch(self, obj):
+        if obj.branch:
+            return {
+                'id': obj.branch.id,
+                'name': obj.branch.name
+            }
+        return None
 
 class LogoutSerializer(serializers.Serializer):
     """Logout serializer"""

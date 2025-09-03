@@ -23,6 +23,7 @@ class UserManager(BaseUserManager):
         extra_fields.setdefault('is_staff', True)
         extra_fields.setdefault('is_superuser', True)
         extra_fields.setdefault('role', 'Admin')
+        extra_fields.setdefault('is_warehouse_keeper', False)  # Default to False for superuser
         
         return self.create_user(username, email, password, **extra_fields)
 
@@ -54,6 +55,7 @@ class User(AbstractBaseUser, PermissionsMixin, SoftDeleteModel):
     branch = models.ForeignKey(Branch, on_delete=models.CASCADE, related_name='users', null=True, blank=True)
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
+    is_warehouse_keeper = models.BooleanField(default=False)  # New field
     created_at = models.DateTimeField(auto_now_add=True)
     last_login = models.DateTimeField(null=True, blank=True)
     
@@ -66,4 +68,5 @@ class User(AbstractBaseUser, PermissionsMixin, SoftDeleteModel):
         db_table = 'users'
     
     def __str__(self):
-        return f"{self.username} ({self.role})"
+        keeper_suffix = " (Warehouse Keeper)" if self.is_warehouse_keeper else ""
+        return f"{self.username} ({self.role}){keeper_suffix}"

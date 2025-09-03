@@ -12,6 +12,20 @@ class IsManagerOrAdmin(permissions.BasePermission):
     def has_permission(self, request, view):
         return request.user.is_authenticated and request.user.role in ['Admin', 'Manager']
 
+class IsWarehouseKeeperOrAdmin(permissions.BasePermission):
+    """Permission for Warehouse Keepers and Admin users"""
+    
+    def has_permission(self, request, view):
+        return (request.user.is_authenticated and 
+                (request.user.role == 'Admin' or request.user.is_warehouse_keeper))
+
+class IsManagerWarehouseKeeperOrAdmin(permissions.BasePermission):
+    """Permission for Manager, Warehouse Keeper, and Admin users"""
+    
+    def has_permission(self, request, view):
+        return (request.user.is_authenticated and 
+                (request.user.role in ['Admin', 'Manager'] or request.user.is_warehouse_keeper))
+
 class IsSameBranchOrAdmin(permissions.BasePermission):
     """Permission for same branch users or Admin"""
     

@@ -4,7 +4,7 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth import login
-from .serializers import LoginSerializer, LogoutSerializer, CustomTokenObtainPairSerializer
+from .serializers import LoginSerializer, LogoutSerializer, CustomTokenObtainPairSerializer, UserSerializer
 from .models import User
 from django.utils import timezone
 
@@ -26,10 +26,11 @@ def login_view(request):
         
         # Add custom claims
         refresh['role'] = user.role
-        refresh['branch_id'] = user.branch.id
-        refresh['branch_name'] = user.branch.name
+        refresh['branch_id'] = user.branch.id if user.branch else None
+        refresh['branch_name'] = user.branch.name if user.branch else None
         refresh['username'] = user.username
         refresh['email'] = user.email
+        refresh['is_warehouse_keeper'] = user.is_warehouse_keeper
         
         return Response({
             'access': str(refresh.access_token),
@@ -39,10 +40,11 @@ def login_view(request):
                 'username': user.username,
                 'email': user.email,
                 'role': user.role,
+                'is_warehouse_keeper': user.is_warehouse_keeper,
                 'branch': {
                     'id': user.branch.id,
                     'name': user.branch.name
-                }
+                } if user.branch else None
             }
         }, status=status.HTTP_200_OK)
     
@@ -68,14 +70,5 @@ def user_profile(request):
     """Get current user profile"""
     
     user = request.user
-    return Response({
-        'id': user.id,
-        'username': user.username,
-        'email': user.email,
-        'role': user.role,
-        'branch': {
-            'id': user.branch.id,
-            'name': user.branch.name
-        },
-        'last_login': user.last_login
-    }, status=status.HTTP_200_OK)
+    serializer = UserSerializer(user)
+    return Response(serializer.data, status=status.HTTP_200_OK)
