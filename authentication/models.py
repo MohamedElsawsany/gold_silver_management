@@ -56,7 +56,7 @@ class User(AbstractBaseUser, PermissionsMixin, SoftDeleteModel):
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
     is_warehouse_keeper = models.BooleanField(default=False)  # New field
-    created_at = models.DateTimeField(auto_now_add=True)
+    created_date = models.DateTimeField(auto_now_add=True)
     last_login = models.DateTimeField(null=True, blank=True)
     
     objects = UserManager()

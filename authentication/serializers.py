@@ -70,8 +70,8 @@ class UserSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = User
-        fields = ['id', 'username', 'email', 'role', 'is_warehouse_keeper', 'branch', 'is_active', 'created_at', 'last_login']
-        read_only_fields = ['id', 'created_at', 'last_login']
+        fields = ['id', 'username', 'email', 'role', 'is_warehouse_keeper', 'branch', 'is_active', 'created_date', 'last_login']
+        read_only_fields = ['id', 'created_date', 'last_login']
     
     def get_branch(self, obj):
         if obj.branch:

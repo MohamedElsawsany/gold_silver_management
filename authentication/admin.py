@@ -8,16 +8,16 @@ class UserAdmin(BaseUserAdmin):
     """Custom User admin"""
     
     list_display = ['username', 'email', 'role', 'branch', 'is_warehouse_keeper_display', 'is_active', 'status', 'last_login']
-    list_filter = ['role', 'branch', 'is_warehouse_keeper', 'is_active', 'deleted_at', 'created_at']
+    list_filter = ['role', 'branch', 'is_warehouse_keeper', 'is_active', 'deleted_at', 'created_date']
     search_fields = ['username', 'email', 'branch__name']
-    ordering = ['-created_at']
+    ordering = ['-created_date']
     list_per_page = 10  # Pagination set to 10
     
     fieldsets = (
         (None, {'fields': ('username', 'password')}),
         ('Personal info', {'fields': ('email', 'role', 'branch')}),
         ('Permissions', {'fields': ('is_active', 'is_staff', 'is_superuser', 'is_warehouse_keeper', 'groups', 'user_permissions')}),
-        ('Important dates', {'fields': ('last_login', 'created_at')}),
+        ('Important dates', {'fields': ('last_login', 'created_date')}),
     )
     
     add_fieldsets = (
@@ -27,7 +27,7 @@ class UserAdmin(BaseUserAdmin):
         }),
     )
     
-    readonly_fields = ['created_at', 'last_login']
+    readonly_fields = ['created_date', 'last_login']
     
     def is_warehouse_keeper_display(self, obj):
         if obj.is_warehouse_keeper:

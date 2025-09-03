@@ -10,8 +10,8 @@ class VendorSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Vendor
-        fields = ['id', 'name', 'created_by', 'created_by_username', 'created_at', 'updated_at']
-        read_only_fields = ['id', 'created_at', 'updated_at', 'created_by']
+        fields = ['id', 'name', 'created_by', 'created_by_username', 'created_date', 'updated_date']
+        read_only_fields = ['id', 'created_date', 'updated_date', 'created_by']
 
 class BranchSerializer(serializers.ModelSerializer):
     """Branch serializer"""
@@ -20,8 +20,8 @@ class BranchSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Branch
-        fields = ['id', 'name', 'created_by', 'created_by_username', 'created_at', 'updated_at']
-        read_only_fields = ['id', 'created_at', 'updated_at', 'created_by']
+        fields = ['id', 'name', 'created_by', 'created_by_username', 'created_date', 'updated_date']
+        read_only_fields = ['id', 'created_date', 'updated_date', 'created_by']
 
 class WarehouseSerializer(serializers.ModelSerializer):
     """Warehouse serializer"""
@@ -32,8 +32,8 @@ class WarehouseSerializer(serializers.ModelSerializer):
     class Meta:
         model = Warehouse
         fields = ['id', 'code', 'branch', 'branch_name', 'cash', 'created_by', 
-                 'created_by_username', 'created_at', 'updated_at']
-        read_only_fields = ['id', 'created_at', 'updated_at', 'created_by']
+                 'created_by_username', 'created_date', 'updated_date']
+        read_only_fields = ['id', 'created_date', 'updated_date', 'created_by']
     
     def validate_branch(self, value):
         """Validate branch access for non-admin users"""
@@ -51,8 +51,8 @@ class CustomerSerializer(serializers.ModelSerializer):
     class Meta:
         model = Customer
         fields = ['id', 'name', 'phone', 'created_by', 'created_by_username', 
-                 'created_at', 'updated_at']
-        read_only_fields = ['id', 'created_at', 'updated_at', 'created_by']
+                 'created_date', 'updated_date']
+        read_only_fields = ['id', 'created_date', 'updated_date', 'created_by']
 
 class SellerSerializer(serializers.ModelSerializer):
     """Seller serializer"""
@@ -63,8 +63,8 @@ class SellerSerializer(serializers.ModelSerializer):
     class Meta:
         model = Seller
         fields = ['id', 'name', 'branch', 'branch_name', 'created_by', 
-                 'created_by_username', 'created_at', 'updated_at']
-        read_only_fields = ['id', 'created_at', 'updated_at', 'created_by']
+                 'created_by_username', 'created_date', 'updated_date']
+        read_only_fields = ['id', 'created_date', 'updated_date', 'created_by']
     
     def validate_branch(self, value):
         """Validate branch access for non-admin users"""
