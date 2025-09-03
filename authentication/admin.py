@@ -7,26 +7,35 @@ from .models import User, Branch
 class UserAdmin(BaseUserAdmin):
     """Custom User admin"""
     
-    list_display = ['username', 'email', 'role', 'branch', 'is_active', 'status', 'last_login']
-    list_filter = ['role', 'branch', 'is_active', 'deleted_at', 'created_at']
+    list_display = ['username', 'email', 'role', 'branch', 'is_warehouse_keeper_display', 'is_active', 'status', 'last_login']
+    list_filter = ['role', 'branch', 'is_warehouse_keeper', 'is_active', 'deleted_at', 'created_at']
     search_fields = ['username', 'email', 'branch__name']
     ordering = ['-created_at']
+    list_per_page = 10  # Pagination set to 10
     
     fieldsets = (
         (None, {'fields': ('username', 'password')}),
         ('Personal info', {'fields': ('email', 'role', 'branch')}),
-        ('Permissions', {'fields': ('is_active', 'is_staff', 'is_superuser', 'groups', 'user_permissions')}),
+        ('Permissions', {'fields': ('is_active', 'is_staff', 'is_superuser', 'is_warehouse_keeper', 'groups', 'user_permissions')}),
         ('Important dates', {'fields': ('last_login', 'created_at')}),
     )
     
     add_fieldsets = (
         (None, {
             'classes': ('wide',),
-            'fields': ('username', 'email', 'password1', 'password2', 'role', 'branch', 'is_active'),
+            'fields': ('username', 'email', 'password1', 'password2', 'role', 'branch', 'is_active', 'is_warehouse_keeper'),
         }),
     )
     
     readonly_fields = ['created_at', 'last_login']
+    
+    def is_warehouse_keeper_display(self, obj):
+        if obj.is_warehouse_keeper:
+            return format_html('<span style="color: blue; font-weight: bold;">✓ Warehouse Keeper</span>')
+        else:
+            return format_html('<span style="color: gray;">✗</span>')
+    is_warehouse_keeper_display.short_description = 'Warehouse Keeper'
+    is_warehouse_keeper_display.admin_order_field = 'is_warehouse_keeper'
     
     def status(self, obj):
         if obj.deleted_at:
@@ -50,6 +59,7 @@ class BranchAdmin(admin.ModelAdmin):
     search_fields = ['name', 'created_by__username']
     ordering = ['-created_date']
     readonly_fields = ['created_date', 'updated_date']
+    list_per_page = 10  # Pagination set to 10
     
     def status(self, obj):
         if obj.deleted_at:
